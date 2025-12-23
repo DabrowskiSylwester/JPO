@@ -1,0 +1,3 @@
+/home/adminmint/Programowanie/JPO - AGH kurs/project/matrixSD/build/CMakeFiles/matrixSD.dir
+/home/adminmint/Programowanie/JPO - AGH kurs/project/matrixSD/build/CMakeFiles/edit_cache.dir
+/home/adminmint/Programowanie/JPO - AGH kurs/project/matrixSD/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++ -std=c++20 -Wall -std=c++20 -Wall CMakeFiles/matrixSD.dir/src/main.cpp.o -o matrixSD
