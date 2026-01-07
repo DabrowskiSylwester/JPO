@@ -92,7 +92,11 @@ int main(){
 
     cout << "matA transposed: " << matA.transpose();
     
+     cout << "matA<double> + matInt" << (matA + matInt);
 
+    cout << "*********************************" << endl;
+    sd::SquareMatrix<double> matSqA(3, 3.0);
+    cout << "Square matrix" << matSqA;
 
     cout << "Done!" << endl;
 }

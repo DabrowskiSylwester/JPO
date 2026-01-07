@@ -3,8 +3,8 @@
 
 CMakeFiles/matrixSD.dir/src/main.cpp.o
  /home/adminmint/Programowanie/JPO - AGH kurs/project/matrixSD/src/main.cpp
- /home/adminmint/Programowanie/JPO - AGH kurs/project/matrixSD/include/matrixSD.hpp
- /home/adminmint/Programowanie/JPO - AGH kurs/project/matrixSD/include/squareSD.hpp
+ /home/adminmint/Programowanie/JPO - AGH kurs/project/matrixSD/include/matrix.hpp
+ /home/adminmint/Programowanie/JPO - AGH kurs/project/matrixSD/include/square.hpp
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h

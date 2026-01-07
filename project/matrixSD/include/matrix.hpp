@@ -47,12 +47,12 @@ namespace sd {
     /***********************************************
     *              CONSTRUCTORS                   *
     * No 1: Default constructor 
-    * Create a scalar (1x1 matrix) with T-type 1 value.
+    * Create a scalar (1x1 matrix) with T-type 0 value.
     * Ex.:
     *    Matrix<double> matA;
     * Result:
     *     
-    *   matA = [ 1.0 ]
+    *   matA = [ 0.0 ]
     *          
     * No 2: Intializing a matrix with a given value
     * and by giving a numer of rows and colums.
@@ -64,7 +64,7 @@ namespace sd {
     *          [ 1 1 ]
     *   matA = | 1 1 |
     *          [ 1 1 ]
-    * Note: the constructors argument are int, because
+    * Note: the dimensions argument are int, because
     * by giving a negative value it will be convert to
     * very large size_t value and programm will try to
     * alocate a big amount of memory - what propably
@@ -155,6 +155,12 @@ namespace sd {
       return std::vector<size_t> { m_rows, m_columns };
     }
 
+    size_t getRowDim() const {
+      return m_rows;
+    }
+    size_t getColumnDim() const {
+      return m_columns;
+    }
     /***********************************************
     *               SETTERS                       *
     * No 1: Setting value of element given 
@@ -304,19 +310,37 @@ namespace sd {
     *   matC = | 7.3 7.4 |
     *          [ 7.5 7.6 ]
     ***********************************************/    
+    
+    // Matrix<T> operator + ( const Matrix & other ) const {
+    //   if ( (m_rows != other.getRowDim()) || (m_columns != other.getColumnDim() ) ){
+    //     throw std::invalid_argument( "Matrixes dimensions error!" );
+    //   }
+      
+    //   Matrix result( m_rows, m_columns, T{0} );
+    //   for ( size_t row = 0; row < m_rows; row++ ){
+    //     for ( size_t column = 0; column < m_columns; column++ ){
+    //       result.m_matrix[row][column] = m_matrix[row][column] + other.m_matrix[row][column];
+    //     }
+    //   }
+    //   return result;  
+    // }
 
-    Matrix operator + ( const Matrix & other ) const {
-      if ( (m_rows != other.m_rows) || (m_columns != other.m_columns) ){
+    template <typename T2>
+    requires std::is_arithmetic_v<T2>  
+    Matrix<T> operator + ( const Matrix<T2> & other ) const {
+      if ( (m_rows != other.getRowDim()) || (m_columns != other.getColumnDim() ) ){
         throw std::invalid_argument( "Matrixes dimensions error!" );
       }
-      Matrix result( m_rows, m_columns, T{0} );
+      
+      Matrix<T> result( m_rows, m_columns, T{0} );
       for ( size_t row = 0; row < m_rows; row++ ){
         for ( size_t column = 0; column < m_columns; column++ ){
-          result.m_matrix[row][column] = m_matrix[row][column] + other.m_matrix[row][column];
+          result.m_matrix[row][column] = m_matrix[row][column] + static_cast<T>( other( row,column ) );
         }
       }
       return result;  
     }
+
 
     /***********************************************
     *                operator +=                   *
