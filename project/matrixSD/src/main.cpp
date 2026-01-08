@@ -2,6 +2,7 @@
 
 #include "matrix.hpp"
 #include "square.hpp"
+#include "triangular.hpp"
 
 using std::cout, std::cin, std::endl;
 
@@ -111,6 +112,7 @@ int main(){
     sd::Matrix<double> matG(3, 3, 2.0);
     sd:: SquareMatrix matSqD( matG );
     cout << "Matrix to SquareMatrix: " << matSqD;
+    cout << "Matrix + SquareMatrix: " << ( matSqD+matG );
 
     cout << "Minor" << matSqB.minor(1,2); 
 
@@ -128,7 +130,25 @@ int main(){
         cout <<ex.what() << endl;
     }
 
-    cout << "Inversion of matrix C" << matSqC.inverse();
+    sd::SquareMatrix matSqF = matSqC.inverse(); 
+    matSqF.setElementDisplayWidth( 12 );
+    cout << "Inversion of matrix C" << matSqF;
+    cout << "matC times its inversion " << matSqC * matSqF;  
 
+    cout << "**********************************" << endl;
+    cout << "Triangular Matrix!" << endl;
+
+    sd::TriangularMatrix matTrA( 3, sd::TriangleType::Lower, 1.0 );
+    cout << "Lower triangular matrix" << matTrA; 
+    sd::TriangularMatrix matTrB( 3, sd::TriangleType::Upper, 1.0 );
+    cout << "Upper triangular matrix " << matTrB; 
+    matTrB( 2, 1 ) = 0.5;
+    try{
+        matTrB( 2, 0 ) = 1.0;
+    }
+    catch( std::domain_error & ex ){
+        cout <<ex.what() << endl;
+    }
+    cout << "B( 2, 1 ) = " << matTrB( 2, 1 ) << "B( 2, 0)" << matTrB( 2, 0 ) << endl; 
     cout << "Done!" << endl;
 }

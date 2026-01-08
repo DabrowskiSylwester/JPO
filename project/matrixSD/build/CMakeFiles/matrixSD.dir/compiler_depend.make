@@ -4,6 +4,7 @@
 CMakeFiles/matrixSD.dir/src/main.cpp.o: /home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/src/main.cpp \
   /home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/include/matrix.hpp \
   /home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/include/square.hpp \
+  /home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/include/triangular.hpp \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -282,6 +283,10 @@ CMakeFiles/matrixSD.dir/src/main.cpp.o: /home/adminmint/Programowanie/JPO\ -\ AG
 
 /usr/include/x86_64-linux-gnu/bits/types/FILE.h:
 
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/include/x86_64-linux-gnu/bits/types.h:
+
 /usr/include/c++/11/bits/uniform_int_dist.h:
 
 /usr/include/c++/11/bits/stl_vector.h:
@@ -352,12 +357,6 @@ CMakeFiles/matrixSD.dir/src/main.cpp.o: /home/adminmint/Programowanie/JPO\ -\ AG
 
 /usr/include/c++/11/bits/stl_relops.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
-
-/usr/include/c++/11/cctype:
-
-/usr/include/x86_64-linux-gnu/bits/byteswap.h:
-
 /usr/include/c++/11/bits/stl_construct.h:
 
 /usr/include/c++/11/bits/max_size_type.h:
@@ -377,6 +376,16 @@ CMakeFiles/matrixSD.dir/src/main.cpp.o: /home/adminmint/Programowanie/JPO\ -\ AG
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
 /usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/c++/11/bits/stl_iterator.h:
+
+/usr/include/c++/11/bits/locale_facets.h:
+
+/usr/include/stdc-predef.h:
+
+/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
+
+/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
 /usr/include/c++/11/bits/stl_pair.h:
 
@@ -410,27 +419,9 @@ CMakeFiles/matrixSD.dir/src/main.cpp.o: /home/adminmint/Programowanie/JPO\ -\ AG
 
 /usr/include/c++/11/bits/allocator.h:
 
-/usr/include/c++/11/bits/stl_iterator.h:
-
-/usr/include/c++/11/bits/locale_facets.h:
-
-/usr/include/stdc-predef.h:
-
-/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
-
-/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
-
 /usr/include/asm-generic/errno-base.h:
 
 /usr/include/c++/11/bits/functexcept.h:
-
-/usr/include/c++/11/bits/exception_defines.h:
-
-/usr/include/alloca.h:
-
-/usr/include/c++/11/bits/locale_conv.h:
-
-/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
 
 /usr/include/c++/11/bits/functional_hash.h:
 
@@ -448,25 +439,29 @@ CMakeFiles/matrixSD.dir/src/main.cpp.o: /home/adminmint/Programowanie/JPO\ -\ AG
 
 /usr/include/c++/11/ext/numeric_traits.h:
 
+/usr/include/c++/11/bits/locale_conv.h:
+
+/usr/include/c++/11/bits/exception_defines.h:
+
+/usr/include/alloca.h:
+
+/usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
+
 /home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/include/matrix.hpp:
 
 /usr/include/asm-generic/errno.h:
 
 /usr/include/c++/11/bits/stringfwd.h:
 
-/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
-
-/usr/include/x86_64-linux-gnu/bits/types.h:
-
 /usr/include/c++/11/bits/locale_classes.h:
+
+/usr/include/c++/11/bits/codecvt.h:
 
 /usr/include/c++/11/bits/exception_ptr.h:
 
 /usr/include/c++/11/cwchar:
 
 /usr/include/c++/11/bits/charconv.h:
-
-/usr/include/c++/11/bits/codecvt.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
 
@@ -506,7 +501,15 @@ CMakeFiles/matrixSD.dir/src/main.cpp.o: /home/adminmint/Programowanie/JPO\ -\ AG
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/messages_members.h:
 
+/home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/include/triangular.hpp:
+
 /usr/include/c++/11/bits/algorithmfwd.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
+
+/usr/include/c++/11/cctype:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
 
 /usr/include/c++/11/clocale:
 

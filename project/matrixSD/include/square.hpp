@@ -21,7 +21,7 @@ namespace sd{
   private:
     // using Matrix<T>::m_rows;      // irt brings base-class members into scope
     // using Matrix<T>::m_columns;   
-     using Matrix<T>::m_matrix;    
+    using Matrix<T>::m_matrix;    
 
   protected:
     size_t m_dim;
@@ -29,7 +29,7 @@ namespace sd{
     /***********************************************
     *              CONSTRUCTORS                   *
     * No 1: Default constructor 
-    * Create a scalar (1x1 matrix) with T-type 0 value.
+    * Create a 1x1 matrix with T-type 0 value.
     * Ex.:
     *    SquareMatrix<double> matA;
     * Result:
@@ -56,8 +56,13 @@ namespace sd{
     ***********************************************/
 
     SquareMatrix( int dim = 1, T value = T{} ) 
-      : Matrix<T>( dim, dim, value), m_dim( dim ) {}
+      : Matrix<T>( dim, dim, value), m_dim( static_cast<size_t>( dim ) ) {}
 
+    /***********************************************
+    * No 4: Costructor converting Matrix 
+    * into SquareMatrix. 
+    ***********************************************/
+    
     SquareMatrix( Matrix<T> matrix) : Matrix<T>( matrix ), m_dim( matrix.getRowDim() ) {
 
       if ( matrix.getRowDim() != matrix.getColumnDim() ){
@@ -72,6 +77,12 @@ namespace sd{
     * of each operation and mathematical assumptions
     * which have to be fulfilled.
     ***********************************************/
+    SquareMatrix transpose() const {
+      
+      Matrix<T> matResult = Matrix<T>::transpose();
+
+      return SquareMatrix<T> ( matResult );
+    }
 
     /***********************************************
     *                   Minor                      *
@@ -207,9 +218,10 @@ namespace sd{
         throw std::invalid_argument( "Math error. Matrix is not invertible!" );
       }
 
-      return (1.0 / detA) * ( cofactor().transpose() );
-
+      return (1.0 / detA) * ( ( cofactor() ).transpose() );
     }
+
+
 
   };    //class 
 

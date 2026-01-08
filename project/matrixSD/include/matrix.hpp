@@ -344,7 +344,7 @@ namespace sd {
     * indices are added.
     * The diferent types of matrixes can be used,
     * but the result will be always casted on left 
-    * hand side matrix type
+    * hand side matrix type.
     * Ex.:
     *          [ 1.0 2.0 ]
     *   matA = | 3.0 4.0 |
@@ -471,7 +471,7 @@ namespace sd {
     * (default value = 6 + " ").      
     ***********************************************/  
     
-    friend std::ostream& operator<<( std::ostream& os, const Matrix& matrix ){
+    friend std::ostream& operator<<( std::ostream& os, const Matrix & matrix ){
 
       os << "\n"; // always begins from new line
 
@@ -484,7 +484,8 @@ namespace sd {
 
       return os;
     }
-  };
+    
+  };  //class
   
   
   /***********************************************

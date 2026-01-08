@@ -174,4 +174,5 @@ CMakeFiles/matrixSD.dir/src/main.cpp.o: \
  /usr/include/c++/11/bits/invoke.h \
  /usr/include/c++/11/bits/quoted_string.h /usr/include/c++/11/sstream \
  /usr/include/c++/11/bits/sstream.tcc \
- /home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/include/square.hpp
+ /home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/include/square.hpp \
+ /home/adminmint/Programowanie/JPO\ -\ AGH\ kurs/project/matrixSD/include/triangular.hpp
