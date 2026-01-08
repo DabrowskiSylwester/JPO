@@ -83,20 +83,52 @@ int main(){
     cout << "matA" << matA << "matB" << matB2 
          << "matA * matB" << (matA * matB2) << endl;
     
-    cout << "matA * 2.0 = " << (2.0*matA);
+    cout << "matA * 2.0 = " << (matA * 2.0);
 
     cout << "matA *= 2.0 " << (matA *= 2.0);
 
     sd::Matrix<int> matInt(3, 2, 5);
-    cout << "Be aware of: matInt * 0.5" << (matInt * 0.5); 
 
     cout << "matA transposed: " << matA.transpose();
     
-     cout << "matA<double> + matInt" << (matA + matInt);
+    cout << "matA<double> + matInt" << (matInt + matA );
 
     cout << "*********************************" << endl;
+    
     sd::SquareMatrix<double> matSqA(3, 3.0);
-    cout << "Square matrix" << matSqA;
+    
+    sd::SquareMatrix<double> matSqB(3);
+    matSqB.setRow(0, std::vector<double>{1.0, 2.0, 3.0});
+    matSqB.setRow(1, std::vector<double>{4.0, 5.0, 6.0});
+    matSqB.setRow(2, std::vector<double>{7.0, 8.0, 9.0});
+    
+    sd::SquareMatrix<double> matSqC( matSqB );
+
+    cout << "Square matrix A" << matSqA;
+    cout << "Square matrix B" << matSqB;
+    cout << "Square matrix C" << matSqC;
+
+    sd::Matrix<double> matG(3, 3, 2.0);
+    sd:: SquareMatrix matSqD( matG );
+    cout << "Matrix to SquareMatrix: " << matSqD;
+
+    cout << "Minor" << matSqB.minor(1,2); 
+
+    matSqC.setRow(0, std::vector<double>{1.5,1.8, 7.8});
+    matSqC.setRow(1, std::vector<double>{-1.2, 5.4, 9.9});
+    matSqC.setRow(2, std::vector<double>{-6.6, -2.2, -1.1});
+    cout << "Square matrix C" << matSqC;
+    cout << "Determinant = " << matSqC.det() << endl;   //202.356
+    cout << "Cofactor of matrixB" << matSqB.cofactor();
+    
+    try{
+        matSqB.inverse();
+    }
+    catch( std::invalid_argument & ex ){
+        cout <<ex.what() << endl;
+    }
+
+    cout << "Inversion of matrix C" << matSqC.inverse();
 
     cout << "Done!" << endl;
 }
