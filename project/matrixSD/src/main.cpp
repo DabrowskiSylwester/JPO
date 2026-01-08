@@ -142,13 +142,14 @@ int main(){
     cout << "Lower triangular matrix" << matTrA; 
     sd::TriangularMatrix matTrB( 3, sd::TriangleType::Upper, 1.0 );
     cout << "Upper triangular matrix " << matTrB; 
-    matTrB( 2, 1 ) = 0.5;
+    matTrB( 1, 2 ) = 0.5;
     try{
         matTrB( 2, 0 ) = 1.0;
     }
     catch( std::domain_error & ex ){
         cout <<ex.what() << endl;
     }
-    cout << "B( 2, 1 ) = " << matTrB( 2, 1 ) << "B( 2, 0)" << matTrB( 2, 0 ) << endl; 
+    cout << "B( 1, 2 ) = " << matTrB( 1, 2 );
+    cout << "\n B( 2, 0)" << matTrB( 2, 0 ) << endl; 
     cout << "Done!" << endl;
 }
