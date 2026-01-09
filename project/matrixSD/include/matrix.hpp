@@ -1,12 +1,14 @@
 /***********************************************
  *              DESCRIPTION                    *
- * File contains a definition of a class Matrix
- * in the namespace sd. The class implements the 
- * most general case of matrix - two dimensional
- * rectangle matrix - and apropriate methods.
+ * This file contains a definition of the Matrix
+ * class in the namespace sd. The class 
+ * implements the most general case of matrix:
+ * two-dimensional rectangular matrix along with
+ * appropriate basic operations.
+ * 
  * It is a template class and because of it, it
- * has to contain all definitions in .hpp file
- * (prof. Cyganek 3.15.5).
+ * must contain all definitions in .hpp file
+ * (according to prof. Cyganek, sec. 3.15.5).
  ***********************************************/
 
 #pragma once
@@ -14,6 +16,7 @@
 #include <type_traits> //is_arithmetic_v
 #include <vector>
 #include <iomanip>     //for better-looking output stream 
+#include <stdexcept>
 
 namespace sd {
 
@@ -25,15 +28,18 @@ namespace sd {
   private:
     /***********************************************
     * Matrix is implemeted as a vector of T-type
-    * vectors. It provides both all arithmetic 
-    * types of data, which can be handeled by 
-    * the class, and possibility of user friendly 
-    * access to matrix's elements - matA [n][m].
-    * Additionally std::vector watches over 
-    * allocation of memory and realising memory
-    * by deleting objects of  the class.
-    * Note that first element of first row has
-    * index metA [0][0]).
+    * vectors. This representation supports all
+    * arithmetic types handled by the class and 
+    * provides user-friendly access to matrix
+    * elements using matA(row, column).
+    * 
+    * Memory management is handled automatically
+    * by std::vector, which takes care of allocation
+    * and deallocation of resources.
+    * 
+    * Note that indexing starts from zero, i.e.
+    * the first element of the first row has index
+    * matA(0, 0).
     ***********************************************/
   protected:
     using TVector = std::vector<T>;         
@@ -42,38 +48,45 @@ namespace sd {
     size_t m_rows, m_columns;  // number of rows and columns in matrix
     TMatrix m_matrix;       // object containg matrix's data
 
-    uint elementDisplayWidth = 6;  // default value for << operator
+    unsigned int elementDisplayWidth = 6;  // default value for << operator
 
   public:
 
     /***********************************************
     *              CONSTRUCTORS                   *
-    * No 1: Default constructor 
-    * Create a scalar (1x1 matrix) with T-type 0 value.
+    * No. 1: Default constructor 
+    * Creates a scalar (1x1) matrix with  a 
+    * default-initialized T value.
+    * 
     * Ex.:
     *    Matrix<double> matA;
+    * 
     * Result:
     *     
     *   matA = [ 0.0 ]
     *          
-    * No 2: Intializing a matrix with a given value
-    * and by giving a numer of rows and colums.
+    * No 2: Parametric constructor
+    * Constructor initializing  a matrix with a given 
+    * numer of rows, colums and initial value.
+    * 
     * Ex.:
     *    Matrix matA(3, 2, 1);
     * or better (with explicit type specification)
-          Matrix<int> matA(3, 2, 1);
+    *      Matrix<int> matA(3, 2, 1);
+    *      
     * Result:
     *          [ 1 1 ]
     *   matA = | 1 1 |
     *          [ 1 1 ]
-    * Note: the dimensions argument are int, because
-    * by giving a negative value it will be convert to
-    * very large size_t value and programm will try to
-    * alocate a big amount of memory - what propably
-    * will cause a termination of programm.  
     * 
-    * No 3: Copy constructor is the default one - it 
-    * need no implementation.
+    * Note: the dimensions argument are of type int.
+    * Providing a negative value would result in an
+    * implicit conversion to a very large size_t
+    * value, potentially causing excessive memory
+    * allocation and program termination.
+    * 
+    * No 3: The copy constructor is the default one  
+    * and requires no explicit implementation.
     ***********************************************/
 
     Matrix( int rows = 1, int columns = 1, T value = T{} ){
@@ -82,7 +95,7 @@ namespace sd {
         throw std::invalid_argument( "Matrix dimensions have to be greater than 0! ");
       }
 
-      m_rows = static_cast<size_t>( rows );   // setting the values and explicit type converion
+      m_rows = static_cast<size_t>( rows );   // explicit type conversion and dimension setup
       m_columns = static_cast<size_t>( columns );  
       m_matrix = TMatrix( m_rows, TVector( m_columns, value ) ); // creating a matrix 
     }
@@ -92,23 +105,24 @@ namespace sd {
 
     /***********************************************
     *               GETTERS                       *
-    * No 1: Getting value of element given 
-    * by row and culuumn indexes.
+    * No 1: Getting the value of a matrix element 
+    * specified by its row and column indices.
+    * 
     * Ex.:
-    *  Let's assume existance of object:
+    *  Given Matrix:
     *          [ 1 2 ]
     *   matA = | 3 4 |
     *          [ 5 6 ]
-    *  Executiong code:
+    * 
+    *  Calling:
     *    matA.getValue(2, 1);
-    *  will rerurn T-type value (int):
-    *    6
+    * 
+    *  rerurns T-type value (here int): 6
     ***********************************************/
 
     T getValue( size_t row, size_t column ) const {
 
-      //Validation (if given index is negative it will be 
-      //converted to a very large value)
+      //Range validation: indices must be within matrix bounds
 
       if ( (row >= m_rows) || (column >= m_columns) ){
         throw std::out_of_range( "Out of range!" );
@@ -118,15 +132,18 @@ namespace sd {
     }
 
     /***********************************************
-    * No 2: Getting whole row.
+    * No 2: Getting an entire row.
+    * 
     * Ex.:
-    *  Let's assume existance of object:
+    * Given Matrix:
     *          [ 1 2 ]
     *   matA = | 3 4 |
     *          [ 5 6 ]
-    *  Executiong code:
+    * 
+    *  Calling:
     *    matA.getRow(1);
-    *  will return T-type vector (int):
+    * 
+    *  returns T-type vector (here vector<int>):
     *  {3, 4}
     ***********************************************/
 
@@ -140,15 +157,18 @@ namespace sd {
     }
 
     /***********************************************
-    * No 3: Getting whole column.
+    * No 3: Getting an  entire column.
+    * 
     * Ex.:
-    *  Let's assume existance of object:
+    *  Given matrix:
     *          [ 1 2 ]
     *   matA = | 3 4 |
     *          [ 5 6 ]
-    *  Executiong code:
+    * 
+    *  Calling
     *    matA.getColumn(1);
-    *  will return T-type vector (int):
+    * 
+    *  returns T-type vector (int):
     *  {2, 4, 6}
     ***********************************************/
 
@@ -169,8 +189,10 @@ namespace sd {
 
     /***********************************************
     *         Getting matrix dimensions           *
-    *  Fuction returns a 2-elements vector containing
+    * Fuction returns a 2-elements vector containing
     * number of rows and columns of matrix.
+    * 
+    * Two others return only one dimension.
     ***********************************************/
 
     std::vector<size_t> getDimensions() const {
@@ -186,16 +208,19 @@ namespace sd {
 
     /***********************************************
     *               SETTERS                       *
-    * No 1: Setting value of element given 
-    * by row and culuumn indexes.
+    * No. 1: Setting the value of a matrix element
+    * specified by its row and column indices.
+    * 
     * Ex.:
-    *  Let's assume existance of object:
+    * Given matrix:
     *          [ 1.0 2.0 ]
     *   matA = | 3.0 4.0 |
     *          [ 5.0 6.0 ]
-    *  Executiong code:
-    *    matA.setValue(2, 1, 5.7);
-    *  will result in new values of 
+    * 
+    * Calling:
+    *   matA.setValue(2, 1, 5.7);
+    * 
+    *  result in:
     *          [ 1.0 2.0 ]
     *   matA = | 3.0 4.0 |
     *          [ 5.0 5.7 ]
@@ -212,64 +237,63 @@ namespace sd {
     }
 
     /***********************************************
-    * No 2: Setting whole row.
+    * No 2: Setting an entire row.
+    * 
     * Ex.:
-    *  Let's assume existance of object:
+    * Given matrix:
     *          [ 1.0 2.0 ]
     *   matA = | 3.0 4.0 |
     *          [ 5.0 6.0 ]
-    *  Executiong code:
+    * 
+    *  Executing:
     *    std::vector<double> v1{1.1, 2.2};
     *    matA.setRow(1, v1);
-    *  will result in new values of 
+    * 
+    *  result in 
     *          [ 1.0 2.0 ]
     *   matA = | 1.1 2.2 |
     *          [ 5.0 5.7 ]
     ***********************************************/
 
-    void setRow( size_t row, TVector vector ){
+    void setRow( size_t row, const TVector & vector ){
 
       if ( row >= m_rows ){
         throw std::out_of_range( "Out of range!" );  
       }
+
       if ( vector.size() != m_columns ){
-        throw std::invalid_argument( "Rows dimensions missmatch!" );
+        throw std::invalid_argument( "Rows dimensions mismatch!" );
       }
 
-      /***********************************************
-      * Using std::swap make that values from 
-      * m_matrix [row] will be replaced with that 
-      * from vector and vice versa.
-      * It fulfills setter's function as vector 
-      * disappears in next step.
-      ***********************************************/
-
-      std::swap(m_matrix [row], vector); 
+      m_matrix[row] = vector;
     }
 
     /***********************************************
     * No 3: Setting whole column.
+    * 
     * Ex.:
-    *  Let's assume existance of object:
+    * Given matrix:
     *          [ 1.0 2.0 ]
     *   matA = | 3.0 4.0 |
     *          [ 5.0 6.0 ]
+    * 
     *  Executiong code:
     *    std::vector<double> v1{1.1, 2.2, 3.3};
     *    matA.setColumn(0, v1);
-    *  will result in new values of 
+    * 
+    *  results in
     *          [ 1.1 2.0 ]
     *   matA = | 2.2 4.0 |
     *          [ 3.3 6.0 ]
     ***********************************************/
   
-    void setColumn( size_t column, TVector vector ){
+    void setColumn( size_t column, const TVector & vector ){
 
       if ( column >= m_columns ){
         throw std::out_of_range( "Out of range!" );  
       }
       if ( vector.size() != m_rows ){
-        throw std::invalid_argument( "Columns dimensions missmatch!" );
+        throw std::invalid_argument( "Column dimensions missmatch!" );
       }
 
       for ( size_t row = 0; row < m_rows; row++ ){
@@ -279,6 +303,7 @@ namespace sd {
 
     /***********************************************
     *      Setting display width of elements      *
+    * 
     * It provides better-looking and configurable
     * display option for matrix using << operator.
     * User can set with it how wide each element is.
@@ -292,22 +317,26 @@ namespace sd {
         throw std::invalid_argument( "Display width has to be bigger than 0!" );
       }
 
-      elementDisplayWidth = static_cast<uint>(value);
+      elementDisplayWidth = static_cast<unsigned int>(value);
     }
 
 
     /***********************************************
     *            Matrix operations                *
-    * In comments there will be given short examples
-    * of each operation and mathematical assumptions
-    * which have to be fulfilled.
+    * 
+    * The following comments provide short examples
+    * of each operation along with the mathematical
+    * assumptions that must be satisfied.
     ***********************************************/
     /***********************************************
     *            Matrix transposition              *
     *              matA.transpose()
-    * Any matrix can be transposed. If matA is m x n
-    * matrix than matA_trasposed is n x m matrix such
-    * that [matA_trasposed]_{ij} = [matA]{ji}
+    * 
+    * Any matrix can be transposed. 
+    * If matA is m x n matrix then matA_trasposed 
+    * is n x m matrix such that:
+    * 
+    * [matA_trasposed]_{ij} = [matA]_{ji}
     ***********************************************/
     Matrix transpose() const {
 
@@ -324,27 +353,33 @@ namespace sd {
 
     /***********************************************
     *                 Operators                   *
-    * In comments there will be given short examples
-    * of each operation and mathematical assumptions
-    * which have to be fulfilled.
-    * To use templates not only for creating diferent
-    * type matrixes but also for operations, some of
-    * operators will be defined outside class 
-    * definition. So there is possibility for example
-    * to add a double-matrix to int-matrix. 
+    * The following operators implement basic
+    * matrix operations. Short examples and the
+    * required mathematical assumptions are
+    * provided in the comments.
+    *
+    * To allow operations between matrices of
+    * different arithmetic types, some operators
+    * are implemented as templates. For example,
+    * it is possible to add a matrix of type double
+    * to a matrix of type int.
     ***********************************************/
 
     /***********************************************
     *                operator +=                   *
     *               matA += matB                   *
+    * 
     * Mathematical assumptions:
     *   1) dim(matA) = dim(matB)
+    * 
     * Description of operation:
-    * Elements of both martixess with the same 
+    * Elements of both martixcs with the same 
     * indices are added.
+    * 
     * The diferent types of matrixes can be used,
-    * but the result will be always casted on left 
-    * hand side matrix type.
+    * but the result will be always cast to the 
+    * left hand side matrix type.
+    * 
     * Ex.:
     *          [ 1.0 2.0 ]
     *   matA = | 3.0 4.0 |
@@ -381,14 +416,18 @@ namespace sd {
     /***********************************************
     *                operator -=                   *
     *               matA -= matB                   *
+    * 
     * Mathematical assumptions:
     *   1) dim(matA) = dim(matB)
+    * 
     * Description of operation:
-    * Elements of both martixess with the same 
-    * indices are substracted. 
+    * Elements of both martices with the same 
+    * indices are subtracted. 
+    * 
     * The diferent types of matrixes can be used,
-    * but the result will be always casted on left 
-    * hand side matrix type
+    * but the result will be always cast to the 
+    * left hand side matrix type.
+    * 
     * Ex.:
     *          [ 1.0 2.0 ]
     *   matA = | 3.0 4.0 |
@@ -407,10 +446,10 @@ namespace sd {
 
     template <typename T2>
     requires std::is_arithmetic_v<T2>
-    Matrix & operator -= ( const Matrix<T2> & other ) {
+    Matrix<T> & operator -= ( const Matrix<T2> & other ) {
 
       if ( (m_rows != other.getRowDim()) || ( m_columns != other.getColumnDim()) ){
-        throw std::invalid_argument(" Matrixes dimensions error!" );
+        throw std::invalid_argument(" Matrices dimensions mismatch!" );
       }
       
       for ( size_t row = 0; row < m_rows; row++ ){
@@ -421,14 +460,12 @@ namespace sd {
       return *this;  
     }
 
-    
-
     /***********************************************
     *                operator *=                   *
     * For matrix multiplication this operator has 
     * sense only for square matrix due to 
-    * dimmensions restrictions. It has thou sense for
-    * scalar multiplication.       
+    * dimmensions restrictions. 
+    * It has thou sense for scalar multiplication.       
     ***********************************************/  
 
     template <typename S>
@@ -463,39 +500,48 @@ namespace sd {
     /***********************************************
     *                operator <<                   *
     *                
-    * Operator << allows to send a matrix to ostream
-    * It cooperates with cout: it make always new line
-    * before and after displaing matrix. To provide
-    * good-looking display the user should change 
-    * column width with setElementDisplayWidth function
-    * (default value = 6 + " ").      
+    * Allows a matrix to be sent to an output stream.
+    * The matrix is always printed with a leading
+    * and trailing newline.
+    *
+    * To provide a readable and aligned output, the
+    * user may adjust the display width of elements
+    * using the setElementDisplayWidth() function.
+    * The default width is 6 characters.     
     ***********************************************/  
     
     friend std::ostream& operator<<( std::ostream& os, const Matrix & matrix ){
 
       os << "\n"; // always begins from new line
 
-      for ( auto const & row : matrix.m_matrix ){   
-        for (auto const & element : row){
-          os << std::setw(matrix.elementDisplayWidth) << element << " ";
+      for ( size_t row = 0; row < matrix.getRowDim(); ++row ) {
+        for ( size_t column = 0; column < matrix.getColumnDim(); ++column ) {
+          os << std::setw(matrix.elementDisplayWidth) << matrix( row, column ) << " ";
         } 
         os << "\n";
       }
 
       return os;
     }
-    
+
   };  //class
   
   
   /***********************************************
   *                operator +                   *
   *            matC = matA + matB               *
+  * 
   * Mathematical assumptions:
   *   1) dim(matA) = dim(matB)
+  * 
   * Description of operation:
-  * Elements of both martixess with the same 
+  * Elements of both martices with the same 
   * indices are added.
+  * 
+  * The resulting matrix has a value type equal 
+  * to the common arithmetictype of both 
+  * operand matrices.
+  * 
   * Ex.:
   *          [ 1.0 2.0 ]
   *   matA = | 3.0 4.0 |
@@ -515,7 +561,7 @@ namespace sd {
   auto operator + ( const Matrix<T1> & lhs, const Matrix<T2> & rhs ){
 
     if ( (lhs.getRowDim() != rhs.getRowDim()) || ( lhs.getColumnDim() != rhs.getColumnDim() ) ){
-      throw std::invalid_argument( "Matrixes dimensions error!" );
+      throw std::invalid_argument( "Matrices dimensions mismatch!" );
     }
     
     using ResultType = std::common_type_t<T1, T2>;  //choose 'stronger' type, eg. double over int
@@ -534,11 +580,19 @@ namespace sd {
    /***********************************************
   *                operator -                   *
   *            matC = matB - matA               *
+  * 
   * Mathematical assumptions:
   *   1) dim(matA) = dim(matB)
+  * 
   * Description of operation:
-  * Elements of both martixess with the same 
-  * indices are substracted. 
+  * Elements of the right-hand side matrix are 
+  * subtracted from the corresponding elements 
+  * of the left-hand side matrix.
+  * 
+  * The resulting matrix has a value type equal 
+  * to the common arithmetictype of both 
+  * operand matrices.
+  * 
   * Ex.:
   *          [ 1.0 2.0 ]
   *   matA = | 3.0 4.0 |
@@ -558,7 +612,7 @@ namespace sd {
   auto operator - ( const Matrix<T1> & lhs, const Matrix<T2> & rhs ){
 
     if ( (lhs.getRowDim() != rhs.getRowDim()) || ( lhs.getColumnDim() != rhs.getColumnDim() ) ){
-      throw std::invalid_argument( "Matrixes dimensions error!" );
+      throw std::invalid_argument( "Matrices dimensions mismatch!" );
     }
     
     using ResultType = std::common_type_t<T1, T2>;  //choose 'stronger' type, eg. double over int
@@ -572,20 +626,22 @@ namespace sd {
     }
 
     return result;  
-    }
+  }
   
   /***********************************************
   *                operator *                   *
   *           matC = matA * matB                *
+  * 
   * Mathematical assumptions:
   *   1) Dimensions:
   *      matA is an m x n matrix
-          matB is an n x p matrix
+         matB is an n x p matrix
+
   * Description of operation:
   *      matC is an m x p matrix such that
-  *      c_ij = sum_{k=1}^n a_ik*b_kj
-  *      for i = 1, ... , m
-  *          j = 1, ... , p
+  *      c_ij = sum_{k=0}^(n-1) a_{ik} * b_{kj}
+  *      for i = 0, ... , m-1
+  *          j = 0, ... , p-1
   * Ex.:
   *          [ 1.0 2.0 ]
   *   matA = | 3.0 4.0 |
@@ -607,7 +663,7 @@ namespace sd {
   auto operator * ( const Matrix<T1> & lhs, const Matrix<T2> & rhs ){
 
     if ( lhs.getColumnDim() != rhs.getRowDim() ){
-      throw std::invalid_argument(" Matrixes dimensions error! ");
+      throw std::invalid_argument( "Matrices dimensions mismatch!" );
     }
 
     using ResultType = std::common_type_t<T1, T2>;  //choose 'stronger' type, eg. double over int
@@ -629,13 +685,16 @@ namespace sd {
   *                operator *                   *
   *           matC = matA * scalar              *
   *           matC = scalar * matA              *
-  * No mathematical assumptions:
+  * 
+  * No mathematical assumptions.
+  * 
   * Description of operation:
   *    matC is a matrix where every element is
   *    product of matA elements with scalar           
   * Operation is (unlike matrix multiplication) 
-  * commutitative and scalar can be of any arithmetic
+  * commutative and scalar can be of any arithmetic
   * type.
+  * 
   * Ex.:
   *          [ 1.0 2.0 ]
   *   matA = | 3.0 4.0 |

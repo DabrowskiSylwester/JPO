@@ -1,9 +1,12 @@
 /***********************************************
- *              DESCRIPTION                    *
- * File contains a definition of a class 
- * SquareMatrix in the namespace sd, which is inherent
- * class of Matrix. The class implements the 
- * two dimensional square matrix.
+ * DESCRIPTION
+ *
+ * This file contains the definition of the
+ * SquareMatrix class in the sd namespace.
+ * SquareMatrix is a class derived from Matrix
+ * and represents a two-dimensional square matrix,
+ * i.e. a matrix with an equal number of rows
+ * and columns.
  ***********************************************/
 
 #pragma once
@@ -13,23 +16,60 @@
 
 namespace sd{
 
-  constexpr double eps = 1e-12;   // near 0.0 definition
+  static constexpr double eps = 1e-12;   // near 0.0 definition
 
+  /***********************************************
+  * Determinant result type policy
+  *
+  * The determinant of a matrix may take negative
+  * values even if the matrix element type is
+  * unsigned. Therefore, for unsigned integral
+  * matrix element types, the return type of the
+  * determinant is promoted to the corresponding
+  * signed type.
+  *
+  * For all other arithmetic types (signed integral
+  * and floating-point), the return type remains
+  * unchanged.
+  *
+  * This trait defines the return type of the
+  * determinant in a safe and mathematically
+  * consistent way.
+  ***********************************************/
+  template <typename T, typename = void>  //if type is proper for determinant leave it
+  struct determinant_result {
+    using type = T;
+  };
+
+  template <typename T>
+  struct determinant_result<
+    T,
+    std::enable_if_t<std::is_integral_v<T> && std::is_unsigned_v<T>>  //for unsigned int change type to signed
+  > {
+    using type = std::make_signed_t<T>;
+  };
+
+  template <typename T>
+  using determinant_result_t = typename determinant_result<T>::type;
+
+  /***********************************************
+    *                 CLASS                    *
+  ***********************************************/
   template <typename T>
   requires std::is_arithmetic_v<T>
   class SquareMatrix : public Matrix<T> {
   private:
-    // using Matrix<T>::m_rows;      // irt brings base-class members into scope
-    // using Matrix<T>::m_columns;   
-    using Matrix<T>::m_matrix;    
-
+  
   protected:
     size_t m_dim;
   public:
     /***********************************************
     *              CONSTRUCTORS                   *
+    * 
     * No 1: Default constructor 
-    * Create a 1x1 matrix with T-type 0 value.
+    * Creatse a 1×1 matrix with a default-initialized 
+    * T value.
+    * 
     * Ex.:
     *    SquareMatrix<double> matA;
     * Result:
@@ -38,14 +78,17 @@ namespace sd{
     *          
     * No 2: Intializing a matrix with a given value
     * and dimension.
+    * 
     * Ex.:
     *    SquareMatrix matA(3, 1);
     * or better (with explicit type specification)
-          SquareMatrix<int> matA(3, 1);
+    *     SquareMatrix<int> matA(3, 1);
+    * 
     * Result:
     *          [ 1 1 1 ]
     *   matA = | 1 1 1 |
     *          [ 1 1 1 ]
+    * 
     * Note: the dimensions argument are int, because
     * by giving a negative value it will be convert to
     * very large size_t value and programm will try to
@@ -63,7 +106,7 @@ namespace sd{
     * into SquareMatrix. 
     ***********************************************/
     
-    SquareMatrix( Matrix<T> matrix) : Matrix<T>( matrix ), m_dim( matrix.getRowDim() ) {
+    SquareMatrix( const Matrix<T> & matrix) : Matrix<T>( matrix ), m_dim( matrix.getRowDim() ) {
 
       if ( matrix.getRowDim() != matrix.getColumnDim() ){
         throw std::invalid_argument( "Dimension error!" );
@@ -73,23 +116,51 @@ namespace sd{
     
     /***********************************************
     *            Matrix operations                *
-    * In comments there will be given short examples
-    * of each operation and mathematical assumptions
-    * which have to be fulfilled.
+    * 
+    * The following comments provide short examples
+    * of each operation along with the mathematical
+    * assumptions that must be satisfied.
     ***********************************************/
+    /***********************************************
+    * Transposition
+    *
+    * For a square matrix, transposition does not
+    * change the matrix dimensions. Therefore,
+    * two versions of the transpose operation are
+    * provided:
+    *
+    * 1) transpose()        – returns a new matrix
+    * 2) transpose_in_place() – transposes the matrix
+    *                           in place
+    ***********************************************/
+
     SquareMatrix transpose() const {
       
-      Matrix<T> matResult = Matrix<T>::transpose();
+      return SquareMatrix<T> (  Matrix<T>::transpose() );
+      
+    }
 
-      return SquareMatrix<T> ( matResult );
+    void transpose_in_place() {
+
+      for ( size_t row = 0; row < m_dim; row++ ) {
+        for ( size_t column = row + 1; column < m_dim; column++) {  //iteration only in upper triangle is sufficent
+            std::swap((*this)(row, column), (*this)(column, row));
+        }
+      }
+
     }
 
     /***********************************************
     *                   Minor                      *
     *                matA.minor( r, c )
-    * If A is n x n matix, then its minor is an
-    * n-1 x n-1 matrix developed from A by deleting
-    * r-th row and c-th column.
+    * If A is an n × n matrix, then its minor is an
+    * (n−1) × (n−1) matrix obtained from A by removing
+    * row r and column c (0-based indexing).
+    * 
+    * Note: The minor of a 1×1 matrix is undefined and
+    * calling this function for such a matrix will
+    * result in an exception.
+    * 
     * Ex.:
     *          [ 1 2 3 ]
     *   matA = | 4 5 6 |
@@ -136,34 +207,47 @@ namespace sd{
     /***********************************************
     *                 Determinant                  *
     *                  matA.det()
+    * 
     * If A is n x n matix, then determinant can be 
-    * given as:
-    * det(A) = sum_{j=0}^{n-1} (-1)^j*a_{0j}*det(Minor_{0j}) 
-    * Note: Determinant can be calculated in relation to 
-    * any row or column. Here it will be always done 
-    * with row 0.
-    * Given algorith is non effective for big matrixes. 
+    * computed as follow:
+    * 
+    * det(A) = sum_{j=0}^{n-1} (-1)^j*a_{0j}*det(M_{0j}) 
+    * 
+    * where M_{0j} is the minor obtained by removing
+    * row 0 and column j.
+    * 
+    * Note: The determinant can be expanded along any row
+    * or column. In this implementation, expansion
+    * is always performed along the first row.
+    * 
+    * The given algorithm is not efficient for large
+    * matrices. 
     ***********************************************/
     
-    T det() const {
+    auto det() const {
       
+      using ResultType = determinant_result_t<T>;
+
       //special cases for dim = 1 and dim = 2:
       if ( m_dim == 1 ) {
-        return (*this)( 0, 0 );  
+        return static_cast<ResultType>( (*this)(0, 0) );
       }
 
       if (m_dim == 2) {
-        return (*this)( 0, 0 ) * (*this)( 1, 1 )
-              -(*this)( 0, 1 ) * (*this)( 1, 0 );
+        return static_cast<ResultType>(
+               (*this)( 0, 0 ) * (*this)( 1, 1 )
+               -(*this)( 0, 1 ) * (*this)( 1, 0 )
+              );
       }
 
-      T result {};
+      ResultType result {};
 
       for ( size_t column = 0; column < m_dim; column++ ){
         
-        T sign =  ( column % 2 == 0 ) ? T{1} : T{-1}; //even with +, odd with -
-        SquareMatrix minorMat = minor( 0, column );
-        result += sign * (*this)( 0, column ) * minorMat.det();
+        ResultType sign =  ( column % 2 == 0 ) ? ResultType{1} : ResultType{-1}; //even with +, odd with -
+        SquareMatrix<T> minorMat = minor( 0, column );
+        result +=  sign *  static_cast<ResultType>( (*this)( 0, column ) )
+                        *  static_cast<ResultType>( minorMat.det() );
       }
 
       return result;

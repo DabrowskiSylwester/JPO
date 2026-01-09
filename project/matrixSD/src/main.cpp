@@ -120,7 +120,14 @@ int main(){
     matSqC.setRow(1, std::vector<double>{-1.2, 5.4, 9.9});
     matSqC.setRow(2, std::vector<double>{-6.6, -2.2, -1.1});
     cout << "Square matrix C" << matSqC;
+    
     cout << "Determinant = " << matSqC.det() << endl;   //202.356
+    cout << "Square matrix C" << matSqC;
+    cout << "transposition 1 " << matSqC.transpose();
+    cout << "Square matrix C" << matSqC;
+    matSqC.transpose_in_place();
+    cout << "transposition 2 " << matSqC;
+    
     cout << "Cofactor of matrixB" << matSqB.cofactor();
     
     try{
@@ -144,12 +151,37 @@ int main(){
     cout << "Upper triangular matrix " << matTrB; 
     matTrB( 1, 2 ) = 0.5;
     try{
-        matTrB( 2, 0 ) = 1.0;
+        //matTrB( 2, 0 ) = 1.0;
+        //matTrA.setValue( 2, 1, 0.7 );
+        matTrA.setRow(0,  std::vector<double>{1.5, 0.0, 0.0});
+        matTrA.setColumn(1, std::vector<double>{0.0, 2.2, 3.3});
+        matTrA.setRow(0,  std::vector<double>{1.5, 1.8, 7.8});
     }
     catch( std::domain_error & ex ){
         cout <<ex.what() << endl;
     }
+
+    cout << "matA " << matTrA;
     cout << "B( 1, 2 ) = " << matTrB( 1, 2 );
-    cout << "\n B( 2, 0)" << matTrB( 2, 0 ) << endl; 
+    cout << "\nB( 2, 0) = " << matTrB.getValue( 2, 0 ) << endl; 
+
+    matSqB.setRow(0, std::vector<double>{1.0, 0.0, 0.0});
+    matSqB.setRow(1, std::vector<double>{4.0, 5.0, 0.0});
+    matSqB.setRow(2, std::vector<double>{7.0, 8.0, 9.0});
+
+    sd::TriangularMatrix matTrC( matSqB );
+    cout << "Matrix from square is " << 
+        ( matTrC.is_lower() ? "lower triangular" : "upper triangular" ) <<endl;
+    cout << matTrC;
+
+    cout << "Transposed look so: " << matTrC.transpose() 
+         << "and it is " <<  ( matTrC.transpose().is_lower() ? "lower triangular" : "upper triangular" ) <<endl;
+
+    matTrC.transpose_in_place();
+
+    cout << "Transposed in place so: " << matTrC 
+         << "and it is " <<  ( matTrC.is_lower() ? "lower triangular" : "upper triangular" ) 
+         << " and it's determinant is: " << matTrC.det() << endl;
+
     cout << "Done!" << endl;
 }
