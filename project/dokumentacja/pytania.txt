@@ -1,5 +1,0 @@
-1. Czy albo jak rozdizelić .hpp i .cpp gdy ma się template clasy?
-2. Przeciążenia operatorów pomiędzy szablonami (dodawanie macierzy intów do doubli)
-3. Czy klasa nadrzędna może wywołać automatycznie konstruktor klasy podrzędnej?.
-4. Czy przy mnożeniu przez skalar można zrobić argument szablonowy?
-5. Wyznacznik ?

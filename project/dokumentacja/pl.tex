@@ -1,0 +1,150 @@
+\documentclass[12pt,a4paper,twoside]{article}
+
+% ---------- POLISH LANGUAGE SUPPORT ----------
+\usepackage[polish]{babel}     % correct hyphenation and translations
+\usepackage[utf8]{inputenc}    % UTF-8 encoding for Polish characters
+\usepackage[T1]{fontenc}       % proper Polish diacritics in PDF
+\usepackage{lmodern}           % Latin Modern font (better PDF output)
+\usepackage{csquotes}
+
+% ---------- PAGE & TEXT SETTINGS ----------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing                % 1.5 line spacing
+\usepackage{indentfirst}       % indent first paragraph of each section
+\usepackage{fancyhdr}
+\usepackage{{titling}}
+
+% ---------- MATH & GRAPHICS $ CIRCUITS ----------
+\let\lll\relax
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{caption}
+\captionsetup{font=small}
+\usepackage{subcaption}
+\usepackage{siunitx}           % for units (e.g., \SI{10}{\volt})
+\usepackage{standalone}        % for inluding pictures
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{booktabs}  % for nicer tables
+\usepackage{siunitx}   % for aligning numbers by decimal point
+\usepackage{diagbox}   % for diagonal cells
+\usepackage{hhline}
+\usepackage{multirow}
+\usepackage{array}
+
+% ---------- CUSTOM FLOATS ----------
+\usepackage{float}
+\newfloat{rysunek}{htbp}{lop}[section]
+\floatname{rysunek}{Rysunek}
+
+\newfloat{wykres}{htbp}{lop}[section]
+\floatname{wykres}{Wykres}
+
+
+% ---------- HYPERLINKS ----------
+\usepackage[hidelinks]{hyperref}
+
+% ---------- DOCUMENT INFO ----------
+
+\title{Dokumentacja projektu: \\
+    \textbf{Biblioteka do obsługi macierzy}}
+\author{Autor projektu:\\
+\textbf{Sylwester Dąbrowski}\\
+Prowadzący:\\
+\textbf{mgr inż. Jakub Zimnol}\\
+Przedmiot:\\
+Języki Programowania Objektowego
+}
+\date{\today}
+
+% --------- Page style setup -----------------
+\pagestyle{fancy}       % enable fancy headers/footers
+\fancyhf{}              % clear all header and footer fields
+
+% Footer
+\fancyfoot[C]{\tiny{Biblioteka do obsługi macierzy - Sylwester Dąbrowski}}   % center of footer: 
+\fancyfoot[LE,RO]{\thepage}
+
+%Title page
+\pretitle{\begin{center}\vspace*{-1cm}\Huge}   % title formatting
+\posttitle{\end{center}
+\begin{center}
+\vfill
+\includegraphics[width=0.35\textwidth]{rysunki/agh_logo.jpg}
+\end{center}
+\vfill}                           % fill space below title
+\preauthor{\large\begin{center}}                                             % nothing before author
+\postauthor{\end{center}}                               % vertical space
+\predate{\begin{center}}                                                % nothing before date
+\postdate{\end{center}}  
+
+
+
+% ---------- BEGIN DOCUMENT ----------
+\begin{document}
+
+
+
+\maketitle 
+\thispagestyle{empty}  %usuwanie numeru strony tytułowej
+%\setcounter{page}{0}  % To sprawia liczenie od 1 następnej strony
+
+\newpage
+
+\section{Opis projektu}
+
+Projekt przedstawia implementację prostej biblioteki do obsługi macierzy matematycznych w języku \texttt{C++},
+z~wykorzystaniem mechanizmów programowania generycznego (szablonów). Biblioteka umożliwia tworzenie i~wykonywanie operacji
+na macierzach prostokątnych, kwadratowych oraz trójkątnych, z~zachowaniem poprawnych własności matematycznych i kontroli błędów.
+
+Celem projektu było zaprojektowanie czytelnego i~bezpiecznego interfejsu umożliwiającego wykonywanie podstawowych operacji algebraicznych na macierzach, 
+takich jak dodawanie, odejmowanie, mnożenie, transpozycja, obliczanie wyznacznika oraz macierzy odwrotnej.
+
+Biblioteka może znaleźć zastosowanie w~prostych obliczeniach numerycznych, zadaniach dydaktycznych z~algebry liniowej 
+oraz jako baza do dalszej rozbudowy (np. o~bardziej zaawansowane algorytmy numeryczne).
+
+\section{Struktura i opis klas}
+
+Projekt składa się z~trzech głównych klas, zorganizowanych hierarchicznie:
+
+\begin{itemize}
+    \item \texttt{Matrix<T>} -- klasa bazowa reprezentująca ogólną macierz prostokątną o~dowolnych wymiarach. 
+    Udostępnia podstawowe operacje na macierzach oraz mechanizmy dostępu do elementów.
+    
+    \item \texttt{SquareMatrix<T>} -- klasa dziedzicząca po \texttt{Matrix<T>}, przeznaczona do obsługi macierzy kwadratowych.
+     Rozszerza funkcjonalność o~operacje charakterystyczne dla macierzy kwadratowych, takie jak obliczanie wyznacznika, 
+     macierzy dopełnień algebraicznych oraz macierzy odwrotnej.
+    
+    \item \texttt{TriangularMatrix<T>} -- klasa dziedzicząca po \texttt{SquareMatrix<T>}, 
+    reprezentująca macierze trójkątne (dolne lub górne). Klasa wymusza zachowanie struktury
+     trójkątnej poprzez kontrolę zapisu elementów oraz oferuje zoptymalizowane obliczanie wyznacznika.
+\end{itemize}
+
+Relacje dziedziczenia odzwierciedlają zależności matematyczne pomiędzy typami macierzy, co pozwala na ponowne wykorzystanie kodu i~zachowanie 
+spójności interfejsu.
+
+\section{Uruchomienie i kompilacja}
+
+Projekt wykorzystuje system budowania \texttt{CMake}. Do skompilowania aplikacji wymagany jest kompilator obsługujący standard \texttt{C++20}.
+
+Sekwencja poleceń umożliwiająca poprawne zbudowanie projektu:
+
+\begin{verbatim}
+mkdir build
+cd build
+cmake ..
+make
+\end{verbatim}
+
+W wyniku kompilacji powstaje plik wykonywalny \texttt{matrixSD}, który zawiera program demonstracyjny prezentujący możliwości zaimplementowanej biblioteki.
+
+\section{Dodatkowe informacje}
+
+Kod projektu został podzielony na pliki nagłówkowe i źródłowe, a jego dokumentacja techniczna została przygotowana w formacie Doxygen bezpośrednio w plikach nagłówkowych.
+
+Plik \texttt{main.cpp} pełni rolę programu testowego, demonstrującego poprawność działania zaimplementowanych klas, obsługę wyjątków oraz przykładowe obliczenia wykonane 
+za pomocą funkcji z~biblioteki.
+
+\end{document}

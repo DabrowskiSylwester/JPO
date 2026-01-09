@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include "matrix.hpp"
-#include "square.hpp"
-#include "triangular.hpp"
+#include "matrixSD.hpp"
+
 
 using std::cout, std::cin, std::endl;
 
@@ -108,9 +107,10 @@ int main(){
     cout << "Square matrix A" << matSqA;
     cout << "Square matrix B" << matSqB;
     cout << "Square matrix C" << matSqC;
-
+    // sd::SquareMatrix<double> matSqZ = matA;
+    //cout << matSqZ;
     sd::Matrix<double> matG(3, 3, 2.0);
-    sd:: SquareMatrix matSqD( matG );
+    sd::SquareMatrix matSqD( matG );
     cout << "Matrix to SquareMatrix: " << matSqD;
     cout << "Matrix + SquareMatrix: " << ( matSqD+matG );
 
@@ -122,6 +122,13 @@ int main(){
     cout << "Square matrix C" << matSqC;
     
     cout << "Determinant = " << matSqC.det() << endl;   //202.356
+    sd::SquareMatrix<unsigned int> matSqE( 3 );
+    matSqE.setRow(0, std::vector<unsigned int>{1, 2, 3});
+    matSqE.setRow(1, std::vector<unsigned int>{2, 5, 2});
+    matSqE.setRow(2, std::vector<unsigned int>{3, 5, 2});
+
+    cout << "Determinant (uint) = " << matSqE.det() << endl; //-11
+
     cout << "Square matrix C" << matSqC;
     cout << "transposition 1 " << matSqC.transpose();
     cout << "Square matrix C" << matSqC;
@@ -163,7 +170,11 @@ int main(){
 
     cout << "matA " << matTrA;
     cout << "B( 1, 2 ) = " << matTrB( 1, 2 );
-    cout << "\nB( 2, 0) = " << matTrB.getValue( 2, 0 ) << endl; 
+    cout << "\nB( 2, 0) = " << matTrB.getValue( 2, 0 ) << endl;
+    // double b = matTrB( 2, 0 ); 
+    // cout << "\nB( 2, 0) = " << b << endl; 
+
+
 
     matSqB.setRow(0, std::vector<double>{1.0, 0.0, 0.0});
     matSqB.setRow(1, std::vector<double>{4.0, 5.0, 0.0});
@@ -182,6 +193,9 @@ int main(){
     cout << "Transposed in place so: " << matTrC 
          << "and it is " <<  ( matTrC.is_lower() ? "lower triangular" : "upper triangular" ) 
          << " and it's determinant is: " << matTrC.det() << endl;
+
+    matTrC.setValue(0, 2, 2.0);
+    //matTrC.setValue(2, 0, 2.0);
 
     cout << "Done!" << endl;
 }

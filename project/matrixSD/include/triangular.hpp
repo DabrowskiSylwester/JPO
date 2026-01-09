@@ -1,3 +1,34 @@
+/***********************************************
+ *              DESCRIPTION                    *
+ * File contains a definition of a class
+ * TriangularMatrix in the namespace sd.
+ *
+ * The class represents a two-dimensional
+ * triangular matrix (upper or lower), which is
+ * a special case of a square matrix. It inherits
+ * from SquareMatrix and enforces the triangular
+ * structure by restricting write access to the
+ * elements outside the allowed triangular part.
+ *
+ * Two types of triangular matrices are supported:
+ *  - Lower triangular matrix
+ *  - Upper triangular matrix
+ *
+ * The triangular type is specified by the
+ * TriangleType enum.
+ *
+ * Attempts to modify elements outside the valid
+ * triangular region result in a runtime error.
+ *
+ * The class preserves all read operations defined
+ * for square matrices while providing additional
+ * safety for write operations, but using 
+ * operator () for read an element and send it 
+ * to output stream  can lead to unwanted execptions
+ * and it is better to use getValue() function.
+ ***********************************************/
+
+
 #pragma once
 
 #include "square.hpp"
@@ -25,10 +56,13 @@ namespace sd{
   public:
       /***********************************************
     *              CONSTRUCTORS                   *
+    * 
     * No 1: Default constructor 
     * Create a 1x1 matrix with T-type 0 value.
+    * 
     * Ex.:
-    *    TraiangularMatrix<double> matA;
+    *    TriangularMatrix<double> matA;
+    * 
     * Result:
     *     
     *   matA = [ 0.0 ]
@@ -37,18 +71,21 @@ namespace sd{
     * type and value.
     * .
     * Ex.:
-    *    TriangularMatrix matA(3, TriangleType::Upper, 1);
+    *    TriangularMatrix matA(3, sd::TriangleType::Upper, 1);
     * or better (with explicit type specification)
-         TriangularMatrix<int> matA(3, 1);
+         TriangularMatrix<int> matA(3, sd::TriangleType::Upper, 1);
+
     * Result:
     *          [ 1 1 1 ]
     *   matA = | 0 1 1 |
     *          [ 0 0 1 ]
-    * Note: the dimensions argument are int, because
-    * by giving a negative value it will be convert to
-    * very large size_t value and programm will try to
-    * alocate a big amount of memory - what propably
-    * will cause a termination of programm.  
+    * 
+    * Note: the dimensions argument are of type int.
+    * Providing a negative value would result in an
+    * implicit conversion to a very large size_t
+    * value, potentially causing excessive memory
+    * allocation and program termination.
+    * 
     * No 3: Copy constructor is the default one - it 
     * need no implementation.
     ***********************************************/  
@@ -71,7 +108,7 @@ namespace sd{
       for( size_t row = 0; (row < m_dim && is_lower) ; row++ ) {
         for ( size_t col = row + 1; col < m_dim; col++ ) {
             if ( sqMat( row, col ) != T{} ) {
-                is_lower = false;
+                is_lower = false;   //it will exit the outer for-loop as well 
                 break;
             }
         }
@@ -80,7 +117,7 @@ namespace sd{
       for ( size_t row = 1; (row < m_dim && is_upper); row++ ){
         for ( size_t col = 0; col < row; col++ ) {
             if ( sqMat( row, col ) != T{} ) {
-                is_upper = false;
+                is_upper = false;      //it will exit the outer for-loop as well 
                 break;
             }
         }
@@ -105,28 +142,34 @@ namespace sd{
     }
 
     /***********************************************
-    *               SETTERS                       *
-    * Setter and operator() has to provide a controll to prevent 
-    * writing in 'zero-pasrt' of matrix.
-    * Read-version of operator() is the same as for 
-    * other matrixes, but has to overriden.
+    *          SETTERS and operator()              *
+    * Write access to matrix elements is restricted
+    * to the valid triangular region. Attempts to
+    * modify elements outside the allowed region
+    * result in a runtime exception.
+    *
+    * The non-const version of operator() is intended
+    * for write access and therefore enforces the
+    * triangular structure. Read-only access can be
+    * safely performed via the const operator() or
+    * getter functions.
     ***********************************************/
 
     T& operator () (size_t r, size_t c) { 
       
-      if ( !writePermission( r, c ) ){
-        throw std::domain_error( "Access denied to that index of triangular matrix!");
-      }
+       if ( !writePermission( r, c ) ){
+         throw std::domain_error( "Access denied to that index of triangular matrix!");
+       }
       
-      return SquareMatrix<T>::operator()( r, c );  
+      return SquareMatrix<T>::operator()( r, c );
+      
     }
 
     T operator()(size_t r, size_t c) const {
-    if (!writePermission( r, c )) {
-        return T{0}; 
+    
+      return SquareMatrix<T>::operator()(r, c);
+
     }
-    return SquareMatrix<T>::operator()(r, c);
-  }
 
     void setValue( size_t row, size_t column, T value ) {
 
@@ -135,11 +178,7 @@ namespace sd{
         throw std::out_of_range( "Out of range!" );
       }
 
-      if ( !writePermission( row, column ) ){
-        throw std::domain_error( "Access denied to that index of triangular matrix!");
-      }
-
-      (*this)( row, column ) = value;
+      (*this)( row, column ) = value;  //operator() checks write permission
 
     }
 
@@ -149,19 +188,19 @@ namespace sd{
         throw std::out_of_range( "Out of range!" );  
       }
       if ( vector.size() != m_dim ){
-        throw std::invalid_argument( "Rows dimensions missmatch!" );
+        throw std::invalid_argument( "Rows dimensions mismatch!" );
       }
 
       for ( size_t column = 0; column < m_dim; column++ ){
         
         if ( !writePermission(row, column) ){
           
-          if ( vector.at( column ) != 0){   //trying to write in forbiden place
+          if ( vector[ column ] != T{0} ){   //trying to write in forbiden place
             throw std::domain_error( "Access denied to that index of triangular matrix!");
           }
           continue;   //0 in proper place
         }
-        (*this)( row, column ) = vector.at( column ); //writting in proper place
+        (*this)( row, column ) = vector[ column ]; //writting in proper place
       }   
     }
 
@@ -172,7 +211,7 @@ namespace sd{
         throw std::out_of_range( "Out of range!" );  
       }
       if ( vector.size() != m_dim ){
-        throw std::invalid_argument( "Columns dimensions missmatch!" );
+        throw std::invalid_argument( "Columns dimensions mismatch!" );
       }
 
       for ( size_t row = 0; row < m_dim; row++ ){
@@ -189,8 +228,9 @@ namespace sd{
 
     /***********************************************
     *              Transposition                   *
-    * For triangular matrix transposition convers 
-    * an upper to lower and vice versa.
+    * Transposition of a triangular matrix converts
+    * an upper triangular matrix into a lower one
+    * and vice versa.
     ***********************************************/
 
     TriangularMatrix transpose() const {
@@ -203,8 +243,8 @@ namespace sd{
 
       for ( size_t row = 0; row < m_dim; row++ ) {
         for ( size_t column = row + 1; column < m_dim; column++) {
-            std::swap( SquareMatrix<T>::operator()( row, column ),  // matrix is converted, so there is need of using SquareMatrix operator 
-                       SquareMatrix<T>::operator()( column, row ));
+            std::swap( SquareMatrix<T>::operator()( row, column ),  // matrix is converted, so there is need of using SquareMatrix operator() 
+                       SquareMatrix<T>::operator()( column, row )); // it allows to change normany unwritable elements.
         }
       }
 
@@ -218,10 +258,14 @@ namespace sd{
     /***********************************************
     *              Determinant                   *
     * For triangular matrix determinant can be 
-    * calculated in much simpler way, by multiplying 
-    * elements on the diagonal.
+    * calculated in a simplified way as the
+    * product of diagonal elements.
+    * The determinant is always of type T, as the
+    * computation involves only multiplication of
+    * diagonal elements and does not introduce any
+    * sign changes.
     ***********************************************/
-    T det(){
+    T det() const {
       T result = T{1};
       for (size_t diagonal = 0; diagonal < m_dim; diagonal++){
         result *= (*this)( diagonal, diagonal );

@@ -1,0 +1,70 @@
+\documentclass{standalone} 
+\usepackage[american]{circuitikz}   
+
+\begin{document}
+\begin{circuitikz}
+    %-------------------------------------------------------------------------
+    %Symbol linii transmisyjnej:
+    %-------------------------------------------------------------------------
+    % wejście z lewej
+    \draw (0,0) node[circ](Left_in){} -- ++(2,0) node[circ, scale=0.5](left_ellipse_center){};
+
+    % elipsa pionowa (spłaszczony okrąg)
+    \draw[thick] (left_ellipse_center) ellipse [x radius=0.3cm, y radius=0.6cm];
+
+    % punkty górny i dolny
+    \coordinate (left_ellipse_top) at ($(left_ellipse_center)+(0,0.6)$);
+    \coordinate (left_ellipse_bottom) at ($(left_ellipse_center)+(0,-0.6)$);
+
+    % masa z lewej
+    \draw (left_ellipse_bottom) --++ (-0.5,0) --++ (0,-0.3) node(GND_left)[ground]{};
+
+    % reszta linii transmisyjnej z dołu
+    \draw[thick] (left_ellipse_bottom) --++ (5,0) node(right_ellipse_bottom)[]{};
+    %elipsa
+    \coordinate (right_ellipse_center) at ($(right_ellipse_bottom)+(0,0.6)$);
+    \coordinate (right_ellipse_top) at ($(right_ellipse_center)+(0,0.6)$);
+    \draw[thick] (right_ellipse_center) ellipse [x radius=0.3cm, y radius=0.6cm];
+
+    %reszta linii transmisyjnej z góry
+    \draw[thick] (left_ellipse_top) --++ (5,0) (right_ellipse_top);
+    \draw[draw=none] (left_ellipse_top) -- (right_ellipse_top) node[midway,above]{$Z_0 , l$};
+
+    % wejście z prawej
+    \draw (right_ellipse_center) node[circ, scale=0.5]{} -- ++(1,0)
+    node[ocirc] (Right_in) {} node[right] {$Z_{\mathrm{out}}=\infty$};
+
+    % masa z prawej
+    \draw ($(right_ellipse_bottom)-(0.1,0)$) --++ (0.6,0) --++ (0,-0.3) node(GND_right)[ground]{};
+
+
+    %-------------------------------------------------------------------------
+    %Generator:
+    %-------------------------------------------------------------------------
+    \draw (Left_in) -- ++(-2,0);
+    \coordinate (gen_center) at (-2.7,0); 
+
+    \draw[thick] (gen_center) circle[radius=0.7cm] node {\Huge$\sim$};
+    \draw[->] ($(gen_center)+(0.5,0.5)$) -- ++(0.2,0.2);
+    \draw ($(gen_center)+(-0.5,-0.5)$) -- ++(-0.2,-0.2);
+
+    \draw ($(gen_center)+(1.5,-0.6)$) node[right, below](){$50\,\Omega$}
+                                       -- ++(0,0.4);
+    \draw[->] ($(gen_center)+(1.5,-0.2)$) --++ (-0.3,0);
+    
+     %-------------------------------------------------------------------------
+    %Oscyloskop:
+    %-------------------------------------------------------------------------
+    \draw (Left_in) --++ (0,1);
+    \coordinate (osc_center) at (0,1.7);
+
+    \draw[thick] (osc_center) circle[radius=0.7];
+    \draw ($(osc_center)+(-0.3,-0.4)$) -- ($(osc_center)+(0.3,-0.4)$)
+          ($(osc_center)+(0.4,-0.3)$) -- ($(osc_center)+(0.4,0.3)$)
+          ($(osc_center)+(0.3,0.4)$) -- ($(osc_center)+(-0.3,0.4)$)
+          ($(osc_center)+(-0.4,0.3)$) -- ($(osc_center)+(-0.4,-0.3)$);
+    \draw ($(Left_in)+(-0.6,0.2)$) node[left](){$50\,\Omega$} --++(0.4,0);
+    \draw[->] ($(Left_in)+(-0.2,0.2)$) --++(-0,0.3);
+   
+\end{circuitikz}
+\end{document}

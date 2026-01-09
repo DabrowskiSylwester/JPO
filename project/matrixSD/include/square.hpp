@@ -106,7 +106,8 @@ namespace sd{
     * into SquareMatrix. 
     ***********************************************/
     
-    SquareMatrix( const Matrix<T> & matrix) : Matrix<T>( matrix ), m_dim( matrix.getRowDim() ) {
+    SquareMatrix( const Matrix<T> & matrix) 
+            : Matrix<T>( matrix ), m_dim( matrix.getRowDim() ) {
 
       if ( matrix.getRowDim() != matrix.getColumnDim() ){
         throw std::invalid_argument( "Dimension error!" );
@@ -226,7 +227,7 @@ namespace sd{
     
     auto det() const {
       
-      using ResultType = determinant_result_t<T>;
+      using ResultType = determinant_result_t<T>; //determinant type can be different from matrix type
 
       //special cases for dim = 1 and dim = 2:
       if ( m_dim == 1 ) {
@@ -256,20 +257,21 @@ namespace sd{
     /***********************************************
     *             Cofactor Matrix               *
     *                matA.cofactor()
-    * Cofactor Matrix of n x n Matrix is an n x n
-    * Matrix build as follow:
+    * The cofactor matrix of an n x n matrix is an n x n
+    * matrix defined as follows:
     * 
     * C_{ij} = (-1)^(i+j) * det( Minor_{ij} )
     * 
     ***********************************************/
 
-    SquareMatrix cofactor() const {
+    auto cofactor() const {
 
-      SquareMatrix result( m_dim, T{0} );
+      using ResultType = determinant_result_t<T>; //determinant type can be different from matrix type
+      SquareMatrix<ResultType> result( m_dim, ResultType{0} );
 
       for (size_t row = 0; row < m_dim; row++ ){
         for (size_t column = 0; column < m_dim; column++ ){
-          T sign =  ( (row + column ) % 2 == 0 ) ? T{1} : T{-1}; //even with +, odd with  
+          ResultType sign =  ( (row + column ) % 2 == 0 ) ? ResultType{1} : ResultType{-1}; //even with +, odd with  
           result( row, column ) = sign * minor(row, column).det(); 
         }
       }
@@ -280,29 +282,35 @@ namespace sd{
     /***********************************************
     *             Matrix inversion               *
     *                matA.inv()
-    * Matrix B is inverse to matrix A, if 
-    *     matA * matB = matB * matA = In 
-    * whre In is n-dimensional identitty matrix.
+    * A matrix B is inverse to matrix A, if 
+    *     matA * matB = matB * matA = I_n 
+    * whre I_n is n-dimensional identitty matrix.
     * Matrix B is often designated as (matA)^(-1).
-    * It can be calculated as follows
-    *   matB = 1/det(matA) * CT
-    * where CT is trasposed cofactor matrix  
+    * 
+    * It can be calculated as:
+    *   matB = 1/det(matA) * C^T
+    * where C^T is trasposed cofactor matrix.
+    *   
     * Assumption:
-    *   1) Matrix has to be invertible, that is
-    *      it's determinat has to be diferent than 0;
-    * Note: inversed Matrix will generally has double
-    * type even when original was intiger matrix. 
+    *   1) The matrix must be invertible, i.e.
+    *      its determinat must be non-zero.
+    * 
+    * Note: The inverse matrix is returned as a matrix
+    * of type double, even if the original matrix
+    * has an integral element type; due to 1/det 
+    * operation inversion generally produces 
+    * non-integer values.
     ***********************************************/
 
-    SquareMatrix<double> inverse(){
+    SquareMatrix<double> inverse() const {
       
-      T detA = det();
+      auto detA = det(); //type will be specified thanks to det() function, but it will be cast to double 
       
-      if ( std::abs( detA ) <= eps ){
+      if ( std::abs( (static_cast<double>( detA )) ) <= eps ){
         throw std::invalid_argument( "Math error. Matrix is not invertible!" );
       }
 
-      return (1.0 / detA) * ( ( cofactor() ).transpose() );
+      return ( 1.0 / (static_cast<double>( detA )) ) * ( ( cofactor() ).transpose() );
     }
 
 

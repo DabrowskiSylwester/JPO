@@ -1,0 +1,130 @@
+\documentclass[12pt,a4paper,twoside]{article}
+
+% ---------- POLISH LANGUAGE SUPPORT ----------
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{csquotes}
+
+% ---------- PAGE & TEXT SETTINGS ----------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{{titling}}
+
+% ---------- MATH & GRAPHICS ----------
+\let\lll\relax
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{caption}
+\captionsetup{font=small}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\usepackage{standalone}
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{booktabs}
+\usepackage{diagbox}
+\usepackage{hhline}
+\usepackage{multirow}
+\usepackage{array}
+
+% ---------- CUSTOM FLOATS ----------
+\usepackage{float}
+\newfloat{rysunek}{htbp}{lop}[section]
+\floatname{rysunek}{Figure}
+
+\newfloat{wykres}{htbp}{lop}[section]
+\floatname{wykres}{Plot}
+
+% ---------- HYPERLINKS ----------
+\usepackage[hidelinks]{hyperref}
+
+% ---------- DOCUMENT INFO ----------
+
+\title{Project Documentation:\\
+    \textbf{Matrix Handling Library}}
+\author{Project author:\\
+\textbf{Sylwester Dąbrowski}\\
+Supervisor:\\
+\textbf{M.Sc. Eng. Jakub Zimnol}\\
+Course:\\
+Object-Oriented Programming Languages
+}
+\date{\today}
+
+% --------- Page style setup -----------------
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyfoot[C]{\tiny{Matrix Handling Library -- Sylwester Dąbrowski}}
+\fancyfoot[LE,RO]{\thepage}
+
+\pretitle{\begin{center}\vspace*{-1cm}\Huge}
+\posttitle{\end{center}
+\begin{center}
+\vfill
+\includegraphics[width=0.35\textwidth]{rysunki/agh_logo.jpg}
+\end{center}
+\vfill}
+\preauthor{\large\begin{center}}
+\postauthor{\end{center}}
+\predate{\begin{center}}
+\postdate{\end{center}}
+
+% ---------- BEGIN DOCUMENT ----------
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+
+\section{Project Description}
+
+The project presents an implementation of a simple mathematical matrix handling library written in \texttt{C++}, using generic programming mechanisms (templates). The library enables creation and execution of operations on rectangular, square, and triangular matrices, while preserving correct mathematical properties and ensuring runtime error control.
+
+The main goal of the project was to design a clear and safe interface that allows performing basic linear algebra operations on matrices, such as addition, subtraction, multiplication, transposition, determinant calculation, and matrix inversion.
+
+The library may be used in simple numerical computations, educational tasks related to linear algebra, and as a foundation for further extensions, for example by implementing more advanced numerical algorithms.
+
+\section{Class Structure and Description}
+
+The project consists of three main classes organized hierarchically:
+
+\begin{itemize}
+    \item \texttt{Matrix<T>} -- a base class representing a general rectangular matrix of arbitrary dimensions. It provides basic matrix operations and mechanisms for accessing matrix elements.
+    
+    \item \texttt{SquareMatrix<T>} -- a class derived from \texttt{Matrix<T>}, intended for handling square matrices. It extends the base functionality with operations specific to square matrices, such as determinant computation, cofactor matrix calculation, and matrix inversion.
+    
+    \item \texttt{TriangularMatrix<T>} -- a class derived from \texttt{SquareMatrix<T>} that represents triangular matrices (lower or upper). The class enforces the triangular structure through controlled write access to elements and offers an optimized determinant calculation.
+\end{itemize}
+
+The inheritance relationships reflect the mathematical hierarchy between different matrix types, allowing code reuse and maintaining interface consistency.
+
+\section{Compilation and Execution}
+
+The project uses the \texttt{CMake} build system. To compile the application, a compiler supporting the \texttt{C++20} standard is required.
+
+The following sequence of commands builds the project correctly:
+
+\begin{verbatim}
+mkdir build
+cd build
+cmake ..
+make
+\end{verbatim}
+
+As a result of the compilation process, an executable file named \texttt{matrixSD} is generated. It contains a demonstration program showcasing the capabilities of the implemented library.
+
+\section{Additional Information}
+
+The project code is divided into header and source files, and its technical documentation has been prepared using the Doxygen format directly within the header files.
+
+The \texttt{main.cpp} file serves as a test and demonstration program, presenting the correctness of the implemented classes, exception handling, and example computations performed using the library.
+
+\end{document}

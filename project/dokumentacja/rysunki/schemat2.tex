@@ -1,0 +1,69 @@
+\documentclass[tikz]{standalone}
+
+\usepackage[american]{circuitikz}
+\usetikzlibrary{calc}
+
+\begin{document}
+\begin{circuitikz}
+
+    %mixer
+    \coordinate (mix_center) at (0,0); 
+    \draw[thick] (mix_center) circle[radius=0.7cm];
+    %\draw ($(gen_center)+(0,-0.7)$) --++ (0,-0.5) node(GND)[ground]{};
+    \coordinate (mix_right) at (0.7,0);
+    \coordinate (mix_top) at (0,0.7);
+    \coordinate (mix_bottom) at (0,-0.7);
+    \draw (mix_center) --++ (-0.5,0);
+    \draw (mix_center) --++ (0,-0.5);
+    \draw (mix_center) --++ (0,0.5);
+    \draw (mix_center) --++ (0.5,0);
+
+    %generatorA
+    \coordinate (genA_center) at (-2.5,1.5);
+    \draw[thick] (genA_center) circle[radius=0.7cm] node {\Huge$\sim$};
+    \draw ($(genA_center)+(0.7,0)$)  -- (mix_top |- genA_center);
+    \draw[->, >=latex] (mix_top |- genA_center) -- (mix_top);
+    \draw ($(genA_center)+(0,0.7)$)  node(genA_subscript)[above]{Generator A};
+    \draw ($(genA_center)+(-0.7,0)$) --++ (-0.5,0)
+        --++ (0,-0.5) node(GNDA)[ground]{};
+
+    %generatorB
+    \coordinate (genB_center) at (-2.5,-1.5);
+    \draw[thick] (genB_center) circle[radius=0.7cm] node {\Huge$\sim$};
+    \draw ($(genB_center)+(0.7,0)$) -- (mix_bottom |- genB_center);
+    \draw[->, >=latex] (mix_bottom |- genB_center) -- (mix_bottom);
+    \draw ($(genB_center)+(0,0.7)$)  node(genB_subscript)[above]{Generator B};
+    \draw ($(genB_center)+(-0.7,0)$) --++ (-0.5,0)
+        --++ (0,-0.5) node(GNDB)[ground]{};
+
+
+    %DUT
+    \draw[->, >=latex] (mix_right) --++ (1.5,0) coordinate (DUTl);
+    \draw[thick] 
+        (DUTl) --++ (0,1.5) 
+               --++ (2.5,-1.5) coordinate (DUTr)
+               --++ (-2.5,-1.5) 
+               --++ (0,1.5);
+    \draw[draw=none] (DUTl) --++ (1,0)
+        node()[]{\textbf{DUT}};
+
+    \draw[->, >=latex]  (DUTr) --++ (1.5,0) coordinate (specl);
+        
+    %sperctrum analyser
+    \coordinate (spec_center) at ($(specl)+(0.7,0)$);
+
+    \draw[thick] (spec_center) circle[radius=0.7cm];
+    \draw ($(spec_center)+(-0.3,-0.4)$) -- ($(spec_center)+(0.3,-0.4)$)
+          ($(spec_center)+(0.4,-0.3)$) -- ($(spec_center)+(0.4,0.3)$)
+          ($(spec_center)+(0.3,0.4)$) -- ($(spec_center)+(-0.3,0.4)$)
+          ($(spec_center)+(-0.4,0.3)$) -- ($(spec_center)+(-0.4,-0.3)$)
+          ($(spec_center)+(0,-0.2)$) -- ($(spec_center)+(0,0.2)$)
+          ($(spec_center)+(-0.1,-0.2)$) -- ($(spec_center)+(-0.1,0.1)$)
+          ($(spec_center)+(0.1,-0.2)$) -- ($(spec_center)+(0.1,0.1)$);
+    \draw ($(spec_center)+(0,-0.7)$) 
+        to[short] (spec_center |- GNDB) node[ground]{};
+    
+
+
+\end{circuitikz}
+\end{document}

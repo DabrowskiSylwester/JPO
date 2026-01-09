@@ -1,0 +1,45 @@
+\documentclass[tikz]{standalone}
+
+\usepackage[american]{circuitikz}
+\usetikzlibrary{calc}
+
+\begin{document}
+\begin{circuitikz}
+
+    %generator
+    \coordinate (gen_center) at (0,0); 
+    \draw[thick] (gen_center) circle[radius=0.7cm] node {\Huge$\sim$};
+    \draw ($(gen_center)+(0,-0.7)$) --++ (0,-0.5) node(GND)[ground]{};
+    \coordinate (gen_right) at (0.7,0);
+
+    %DUT
+    \draw[->, >=latex]  (gen_right) --++ (1.5,0) coordinate (DUTl);
+    \draw[thick] 
+        (DUTl) --++ (0,1.5) 
+               --++ (2.5,-1.5) coordinate (DUTr)
+               --++ (-2.5,-1.5) 
+               --++ (0,1.5);
+    \draw[draw=none] (DUTl) --++ (1,0)
+        node()[]{\textbf{DUT}};
+
+    \draw[->, >=latex]  (DUTr) --++ (1.5,0) coordinate (specl);
+        
+    %sperctrum analyser
+    \coordinate (spec_center) at ($(specl)+(0.7,0)$);
+
+    \draw[thick] (spec_center) circle[radius=0.7cm];
+    \draw ($(spec_center)+(-0.3,-0.4)$) -- ($(spec_center)+(0.3,-0.4)$)
+          ($(spec_center)+(0.4,-0.3)$) -- ($(spec_center)+(0.4,0.3)$)
+          ($(spec_center)+(0.3,0.4)$) -- ($(spec_center)+(-0.3,0.4)$)
+          ($(spec_center)+(-0.4,0.3)$) -- ($(spec_center)+(-0.4,-0.3)$)
+          ($(spec_center)+(0,-0.2)$) -- ($(spec_center)+(0,0.2)$)
+          ($(spec_center)+(-0.1,-0.2)$) -- ($(spec_center)+(-0.1,0.1)$)
+          ($(spec_center)+(0.1,-0.2)$) -- ($(spec_center)+(0.1,0.1)$);
+    \draw ($(spec_center)+(0.7,0)$) 
+        to[short] ($(spec_center)+(1.7,0)$) coordinate(node1)
+        to[short] (node1 |- GND) node[ground]{};
+    
+
+
+\end{circuitikz}
+\end{document}

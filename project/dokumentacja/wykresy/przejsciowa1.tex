@@ -1,0 +1,92 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\documentclass[tikz]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+\usepackage{grffile}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\usepgfplotslibrary{patchplots}
+\usepackage{amsmath}
+
+\begin{document}
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=4.521in,
+height=3.566in,
+at={(0.758in,0.481in)},
+scale only axis,
+xmin=-30,
+xmax=5,
+xlabel style={font=\color{white!15!black}},
+xlabel={Moc wejściowa [dBm]},
+ymin=-20,
+ymax=20,
+ylabel style={font=\color{white!15!black}},
+ylabel={Moc wyjściowa [dBm], wzmocnienie [dB]},
+axis background/.style={fill=white},
+title style={font=\bfseries},
+title={Charakterystyki dla sygnału 1 GHz},
+xmajorgrids,
+ymajorgrids,
+legend style={at={(0.97,0.03)}, anchor=south east, legend cell align=left, align=left, draw=white!15!black}
+]
+\addplot [color=blue, only marks, mark=*, mark options={solid, blue}]
+  table[row sep=crcr]{%
+-30	-15.2\\
+-26	-11.1\\
+-22	-7.1\\
+-18	-3.1\\
+-14	0.8\\
+-10	4.7\\
+-6	8.6\\
+-4	10.5\\
+-2	12.2\\
+-1	12.9\\
+0	13.5\\
+1	13.9\\
+2	14.2\\
+3	14.4\\
+4	14.6\\
+5	14.6\\
+};
+\addlegendentry{Moc wyjściowa}
+
+\addplot [color=red, only marks, mark=*, mark options={solid, red}]
+  table[row sep=crcr]{%
+-30	14.8\\
+-26	14.9\\
+-22	14.9\\
+-18	14.9\\
+-14	14.8\\
+-10	14.7\\
+-6	14.6\\
+-4	14.5\\
+-2	14.2\\
+-1	13.9\\
+0	13.5\\
+1	12.9\\
+2	12.2\\
+3	11.4\\
+4	10.6\\
+5	9.6\\
+};
+\addlegendentry{Wzmocnienie}
+
+\addplot [color=green, dashed]
+  table[row sep=crcr]{%
+-1	-15\\
+-1	20\\
+};
+\addlegendentry{Linia rozdzielająca zakresy pracy}
+
+\end{axis}
+\end{tikzpicture}%
+\end{document}
